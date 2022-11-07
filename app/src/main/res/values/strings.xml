@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">BYTAW</string>
+    <string name="title_alarm">アラーム</string>
+    <string name="title_history">頑張った記録</string>
+</resources>
