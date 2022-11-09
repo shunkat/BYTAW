@@ -12,7 +12,7 @@ import com.example.bytaw.databinding.FragmentAlarmBinding
 
 class AlarmFragment : Fragment() {
 
-    private lateinit var AlarmViewModel: AlarmViewModel
+    private lateinit var alarmViewModel: AlarmViewModel
     private var _binding: FragmentAlarmBinding? = null
 
     // This property is only valid between onCreateView and
@@ -24,16 +24,16 @@ class AlarmFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        AlarmViewModel =
+        alarmViewModel =
             ViewModelProvider(this).get(AlarmViewModel::class.java)
 
         _binding = FragmentAlarmBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textAlarm
-        alarmViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+//        val textView: TextView = binding.textAlarm
+//        alarmViewModel.text.observe(viewLifecycleOwner, Observer {
+//            textView.text = it
+//        })
         return root
     }
 

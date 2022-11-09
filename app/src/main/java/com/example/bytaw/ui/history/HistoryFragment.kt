@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.bytaw.databinding.FragmentHistoryBinding
-import com.example.bytaw.databinding.FragmentHomeBinding
 
 class HistoryFragment : Fragment() {
 
