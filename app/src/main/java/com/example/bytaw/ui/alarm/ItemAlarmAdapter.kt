@@ -1,29 +1,35 @@
 package com.example.bytaw.ui.alarm
 
 import android.content.Context
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bytaw.R
 import com.example.bytaw.databinding.ItemAlarmBinding
 
-class ItemAlarmAdapter(
-    private val _alarms: ArrayList<AlarmModel?>,
-    private val onItemClick: (id: String?) -> Unit
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    override fun getItemCount(): Int {
-        return _alarms.size
+class ItemAlarmAdapter(private val alarms: Array<AlarmModel>?) :
+    RecyclerView.Adapter<ItemAlarmAdapter.ViewHolder>() {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val textView: TextView
+            init {
+                textView = view.findViewById(R.id.sample)
+            }
+        }
+    // レイアウトの骨組み作り
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_alarm, parent, false)
+        return ViewHolder(view)
     }
 
-    class ItemAlarmHolder(val binding: ItemAlarmBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        viewHolder.textView.text = "成功"
 
-        fun bind(
-            context: Context,
-            mediaType: Int,
-            item: AlarmModel?,
-            onItemClick: (id: String?, title: String?) -> Unit
-        ) {
+    }
 
-        }
-
-
-        }
+    override fun getItemCount() = alarms?.size ?: 3
 }
