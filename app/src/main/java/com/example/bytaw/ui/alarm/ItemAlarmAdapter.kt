@@ -10,14 +10,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bytaw.R
-import com.example.bytaw.databinding.ItemAlarmBinding
 
 class ItemAlarmAdapter(private val alarms: Array<AlarmModel>?) :
     RecyclerView.Adapter<ItemAlarmAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val textView: TextView
             init {
-                textView = view.findViewById(R.id.sample)
+                textView = view.findViewById(R.id.alarm_time)
             }
         }
     // レイアウトの骨組み作り
@@ -27,9 +26,10 @@ class ItemAlarmAdapter(private val alarms: Array<AlarmModel>?) :
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.textView.text = "成功"
-
+        if (alarms.isNullOrEmpty()) {
+            viewHolder.textView.text = "空です。"
+        }
+        viewHolder.textView.text = alarms!![position].time ?: "98:78"
     }
-
-    override fun getItemCount() = alarms?.size ?: 3
+    override fun getItemCount() = alarms?.size ?: 0
 }

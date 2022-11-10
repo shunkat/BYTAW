@@ -21,7 +21,6 @@ class AlarmFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -37,6 +36,7 @@ class AlarmFragment : Fragment() {
 //        alarmViewModel.text.observe(viewLifecycleOwner, Observer {
 //            textView.text = it
 //        })
+        setupListAlarm()
         return root
     }
 
@@ -46,7 +46,8 @@ class AlarmFragment : Fragment() {
     }
 
     private fun setupListAlarm() {
-        _itemAlarmAdapter = ItemAlarmAdapter(null)
+        val sampleAlarms:Array<AlarmModel> = arrayOf(AlarmModel("test","12:34",null,true),AlarmModel("test2","23:45",null,true),AlarmModel("test3","34:56",null,true))
+        _itemAlarmAdapter = ItemAlarmAdapter(sampleAlarms)
         _binding!!.rcvAlarm.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = _itemAlarmAdapter
