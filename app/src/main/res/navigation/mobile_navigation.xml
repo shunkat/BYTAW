@@ -6,14 +6,14 @@
     app:startDestination="@+id/navigation_alarm">
 
     <fragment
-        android:id="@+id/navigation_alarm"
-        android:name="com.example.bytaw.ui.alarm.AlarmFragment"
-        android:label="@string/title_alarm"
-        tools:layout="@layout/fragment_alarm" />
-
-    <fragment
         android:id="@+id/navigation_history"
         android:name="com.example.bytaw.ui.history.HistoryFragment"
         android:label="@string/title_history"
         tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/navigation_alarm"
+        android:name="com.example.bytaw.ui.alarm.AlarmFragment"
+        android:label="@string/title_alarm"
+        tools:layout="@layout/fragment_alarm" />
 </navigation>
