@@ -6,11 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".ui.alarm.AlarmFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/alarmToolBar"
+        app:title="アラーム"
+        app:titleTextColor="@color/black"
+        android:theme="?attr/actionBarTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_green"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcvAlarm"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/alarmToolBar"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

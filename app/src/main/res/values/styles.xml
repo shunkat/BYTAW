@@ -1,3 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="CustomSwitch" parent="Theme.AppCompat.Light">
+
+        <!--ボタンON時のボタンの通り道（透明度30%）・ボタンとタッチフィードバックカラー-->
+        <item name="colorControlActivated">@color/light_green_back</item>
+
+        <!--ボタンOFF時のボタンの通り道（透明度30%）-->
+        <item name="android:colorForeground">@color/gray</item>
+
+        <!-- OFFボタンを押したときのタッチフィードバックカラー -->
+        <item name="colorControlHighlight">@color/light_green</item>
+
+    </style>
 </resources>
