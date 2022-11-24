@@ -59,9 +59,9 @@ class AlarmFragment : Fragment() {
     }
 
     private fun setupListAlarm() {
-//        alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
+        alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
 //        val sampleAlarms:Array<AlarmModel> = arrayOf(AlarmModel("test",12,23, arrayOf(1,2),true),AlarmModel("test2",12,9,null,true),AlarmModel("test3",2,2, arrayOf(0,1,2,3,4,5,6),true))
-        _itemAlarmAdapter = ItemAlarmAdapter()
+        _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
         _binding!!.rcvAlarm.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = _itemAlarmAdapter

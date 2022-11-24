@@ -22,6 +22,7 @@ class ItemAlarmAdapter(private val alarms: List<AlarmModel>?) :
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         if (alarms.isNullOrEmpty()) {
             viewHolder.wakeUpTime.text = "空です。"
+            return
         }
         viewHolder.wakeUpTime.text = alarms!![position].hour.toString() + ":" + alarms!![position].minute.toString()
         var repeatDays:String? = ""
