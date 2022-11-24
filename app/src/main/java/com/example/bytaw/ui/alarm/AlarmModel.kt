@@ -4,7 +4,8 @@ import java.util.*
 
 data class AlarmModel(
     val id: String,
-    val time: String,
+    val hour: Int,
+    val minute: Int,
     val schedules: Array<Int>?,
     val isWork: Boolean
     )

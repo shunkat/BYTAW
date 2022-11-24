@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bytaw.R
 
-class ItemAlarmAdapter(private val alarms: Array<AlarmModel>?) :
+class ItemAlarmAdapter(private val alarms: List<AlarmModel>?) :
     RecyclerView.Adapter<ItemAlarmAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val wakeUpTime: TextView = view.findViewById(R.id.alarm_time)
@@ -22,8 +22,9 @@ class ItemAlarmAdapter(private val alarms: Array<AlarmModel>?) :
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         if (alarms.isNullOrEmpty()) {
             viewHolder.wakeUpTime.text = "空です。"
+            return
         }
-        viewHolder.wakeUpTime.text = alarms!![position].time ?: "98:78"
+        viewHolder.wakeUpTime.text = alarms!![position].hour.toString() + ":" + alarms!![position].minute.toString()
         var repeatDays:String? = ""
         if (alarms!![position].schedules?.contains(0) == true) { repeatDays += "日 " }
         if (alarms!![position].schedules?.contains(1) == true) { repeatDays += "月 " }

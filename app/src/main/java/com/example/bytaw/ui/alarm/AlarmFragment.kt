@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bytaw.R
 import com.example.bytaw.databinding.FragmentAlarmBinding
 
 class AlarmFragment : Fragment() {
@@ -40,14 +40,28 @@ class AlarmFragment : Fragment() {
         return root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        _binding!!.alarmToolBar.inflateMenu(R.menu.alarm_menu)
+        _binding!!.alarmToolBar.setOnMenuItemClickListener {
+            showTimePickerDialog()
+            true
+        }
+    }
+    fun showTimePickerDialog() {
+        val newFragment: DialogFragment = TimePickerFragment()
+        newFragment.show(childFragmentManager,"test")
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
     private fun setupListAlarm() {
-        val sampleAlarms:Array<AlarmModel> = arrayOf(AlarmModel("test","12:34", arrayOf(1,2),true),AlarmModel("test2","23:45",null,true),AlarmModel("test3","34:56", arrayOf(0,1,2,3,4,5,6),true))
-        _itemAlarmAdapter = ItemAlarmAdapter(sampleAlarms)
+        alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
+//        val sampleAlarms:Array<AlarmModel> = arrayOf(AlarmModel("test",12,23, arrayOf(1,2),true),AlarmModel("test2",12,9,null,true),AlarmModel("test3",2,2, arrayOf(0,1,2,3,4,5,6),true))
+        _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
         _binding!!.rcvAlarm.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = _itemAlarmAdapter
