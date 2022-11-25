@@ -11,6 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bytaw.R
 import com.example.bytaw.databinding.FragmentAlarmBinding
+import database.Alarms
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.coroutineContext
 
 class AlarmFragment : Fragment() {
 
@@ -36,7 +42,11 @@ class AlarmFragment : Fragment() {
 //        alarmViewModel.text.observe(viewLifecycleOwner, Observer {
 //            textView.text = it
 //        })
-        setupListAlarm()
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.Default) {
+                setupListAlarm()
+            }
+        }
         return root
     }
 
@@ -58,10 +68,13 @@ class AlarmFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupListAlarm() {
-        alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
-//        val sampleAlarms:Array<AlarmModel> = arrayOf(AlarmModel("test",12,23, arrayOf(1,2),true),AlarmModel("test2",12,9,null,true),AlarmModel("test3",2,2, arrayOf(0,1,2,3,4,5,6),true))
-        _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
+    private suspend fun setupListAlarm() {
+//        alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
+        val sampleAlarms:List<Alarms> = listOf(Alarms(0,2,3,false,true,true,true,true,true,true,true,true),Alarms(0,2,3,true,true,true,true,true,true,true,true,true))
+//        _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
+        var alarms = alarmViewModel.getAlarms()
+        if (alarms.size == 0) alarms = sampleAlarms
+        _itemAlarmAdapter = ItemAlarmAdapter(alarms)
         _binding!!.rcvAlarm.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = _itemAlarmAdapter

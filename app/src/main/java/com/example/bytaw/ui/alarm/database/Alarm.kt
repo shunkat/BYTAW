@@ -9,6 +9,7 @@ data class Alarms(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo val hour: Int,
     @ColumnInfo val minute: Int,
+    // :todo ここ独自型にしてconverter実装
     @ColumnInfo val isRepeatable: Boolean,
     @ColumnInfo val isSundayAlarm: Boolean,
     @ColumnInfo val isMondayAlarm: Boolean,
