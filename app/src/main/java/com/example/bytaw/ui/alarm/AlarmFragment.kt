@@ -6,17 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bytaw.R
 import com.example.bytaw.databinding.FragmentAlarmBinding
 import database.Alarms
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
 
 class AlarmFragment : Fragment() {
 
@@ -42,11 +38,7 @@ class AlarmFragment : Fragment() {
 //        alarmViewModel.text.observe(viewLifecycleOwner, Observer {
 //            textView.text = it
 //        })
-        CoroutineScope(Dispatchers.Main).launch {
-            withContext(Dispatchers.Default) {
-                setupListAlarm()
-            }
-        }
+        setupListAlarm()
         return root
     }
 
@@ -59,7 +51,8 @@ class AlarmFragment : Fragment() {
         }
     }
     fun showTimePickerDialog() {
-        val newFragment: DialogFragment = TimePickerFragment()
+        val newFragment: DialogFragment = TimePickerFragment(alarmViewModel)
+
         newFragment.show(childFragmentManager,"test")
     }
 
@@ -68,16 +61,20 @@ class AlarmFragment : Fragment() {
         _binding = null
     }
 
-    private suspend fun setupListAlarm() {
-//        alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
-        val sampleAlarms:List<Alarms> = listOf(Alarms(0,2,3,false,true,true,true,true,true,true,true,true),Alarms(0,2,3,true,true,true,true,true,true,true,true,true))
-//        _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
-        var alarms = alarmViewModel.getAlarms()
-        if (alarms.size == 0) alarms = sampleAlarms
-        _itemAlarmAdapter = ItemAlarmAdapter(alarms)
-        _binding!!.rcvAlarm.apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = _itemAlarmAdapter
+    private fun setupListAlarm() {
+//    alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
+        val alarmsObserver = Observer<List<Alarms>> {
+            val sampleAlarms:List<Alarms> = listOf(Alarms(0,2,3,false,true,true,true,true,true,true,true,true),Alarms(0,2,3,true,true,true,true,true,true,true,true,true))
+            if (it.size == 0) {
+                _itemAlarmAdapter = ItemAlarmAdapter(sampleAlarms)
+            } else {
+                _itemAlarmAdapter = ItemAlarmAdapter(it)
+            }
+            _binding!!.rcvAlarm.apply {
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                adapter = _itemAlarmAdapter
+            }
         }
+        alarmViewModel.alarms.observe(viewLifecycleOwner, alarmsObserver)
     }
 }

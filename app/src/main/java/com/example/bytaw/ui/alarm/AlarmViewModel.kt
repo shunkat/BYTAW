@@ -22,7 +22,9 @@ class AlarmViewModel @Inject constructor(application: Application): BaseViewMode
     private val _text = MutableLiveData<String>().apply {
         value = "アラーム画面"
     }
-    val text: LiveData<String> = _text
+    val alarms: MutableLiveData<List<Alarms>> by lazy {
+        MutableLiveData<List<Alarms>>()
+    }
 
     suspend fun getAlarms() :List<Alarms> {
         return dao.getAll()
@@ -30,6 +32,7 @@ class AlarmViewModel @Inject constructor(application: Application): BaseViewMode
 
     suspend fun addAlarm(alarm: Alarms) {
         dao.insert(alarm)
+        alarms = getAlarms()
     }
 
     suspend fun deleteAlarm(alarm: Alarms) {
