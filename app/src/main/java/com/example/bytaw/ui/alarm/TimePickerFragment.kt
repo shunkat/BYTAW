@@ -42,7 +42,7 @@ class TimePickerFragment(private var alarmViewModel: AlarmViewModel) : DialogFra
             isWork = false
         )
 
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.Default) {
                 alarmViewModel.addAlarm(alarm = newAlarm)
             }
