@@ -47,5 +47,6 @@ class TimePickerFragment(private var alarmViewModel: AlarmViewModel) : DialogFra
                 alarmViewModel.addAlarm(alarm = newAlarm)
             }
         }
+
     }
 }

@@ -33,7 +33,6 @@ class AlarmFragment : Fragment() {
 
         _binding = FragmentAlarmBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
 //        val textView: TextView = binding.textAlarm
 //        alarmViewModel.text.observe(viewLifecycleOwner, Observer {
 //            textView.text = it
@@ -63,13 +62,7 @@ class AlarmFragment : Fragment() {
 
     private fun setupListAlarm() {
 //    alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
-        val alarmsObserver = Observer<List<Alarms>> {
-            val sampleAlarms:List<Alarms> = listOf(Alarms(0,2,3,false,true,true,true,true,true,true,true,true),Alarms(0,2,3,true,true,true,true,true,true,true,true,true))
-            if (it.size == 0) {
-                _itemAlarmAdapter = ItemAlarmAdapter(sampleAlarms)
-            } else {
-                _itemAlarmAdapter = ItemAlarmAdapter(it)
-            }
+            _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
             _binding!!.rcvAlarm.apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 adapter = _itemAlarmAdapter
