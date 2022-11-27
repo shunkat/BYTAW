@@ -1,5 +1,6 @@
 package com.example.bytaw.ui.alarm
 
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bytaw.R
 import com.example.bytaw.databinding.FragmentAlarmBinding
 import database.Alarms
+import kotlinx.coroutines.*
 
 class AlarmFragment : Fragment() {
 
@@ -37,7 +39,7 @@ class AlarmFragment : Fragment() {
 //        alarmViewModel.text.observe(viewLifecycleOwner, Observer {
 //            textView.text = it
 //        })
-        setupListAlarm()
+
         return root
     }
 
@@ -50,9 +52,14 @@ class AlarmFragment : Fragment() {
         }
     }
     fun showTimePickerDialog() {
-        val newFragment: DialogFragment = TimePickerFragment(alarmViewModel)
+        val newFragment: DialogFragment = TimePickerFragment(alarmViewModel, this)
 
         newFragment.show(childFragmentManager,"test")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupListAlarm()
     }
 
     override fun onDestroyView() {
@@ -60,14 +67,16 @@ class AlarmFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupListAlarm() {
+    fun setupListAlarm() {
 //    alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
-            _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
-            _binding!!.rcvAlarm.apply {
-                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                adapter = _itemAlarmAdapter
+        CoroutineScope(Dispatchers.IO).launch {
+            withContext(Dispatchers.Default) {
+                _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
+                _binding!!.rcvAlarm.apply {
+                    layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                    adapter = _itemAlarmAdapter
+                }
             }
         }
-        alarmViewModel.alarms.observe(viewLifecycleOwner, alarmsObserver)
     }
 }
