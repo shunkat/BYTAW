@@ -1,49 +1,40 @@
 package com.example.bytaw.ui.alarm
 
+import android.app.Application
+import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.bytaw.Storage
+import com.example.bytaw.BaseViewModel
+import com.example.bytaw.MainActivity
+import com.google.android.material.internal.ContextUtils.getActivity
+import database.AlarmDatabase
+import database.Alarms
+import java.security.AccessControlContext
+import java.security.AccessController.getContext
 import javax.inject.Inject
 
-class AlarmViewModel @Inject constructor(): ViewModel(), Parcelable {
-    private lateinit var storage: Storage
-
+class AlarmViewModel @Inject constructor(application: Application): BaseViewModel(application){
+    private val db = AlarmDatabase.getInstance(context)
+    private val dao = db.alarmDao()
     private val _text = MutableLiveData<String>().apply {
         value = "アラーム画面"
     }
-    val text: LiveData<String> = _text
-
-    constructor(parcel: Parcel) : this() {
-
+    val alarms: MutableLiveData<List<Alarms>> by lazy {
+        MutableLiveData<List<Alarms>>()
     }
 
-    fun getAlarms(): List<AlarmModel>? {
-        return storage.getAlarms()
-    }
-    fun setAlarm(alarm: AlarmModel) {
-        storage.setAlarm(alarm)
-    }
-//    fun removeAlarm(alarm: AlarmModel) {
-//        storage.removeAlarm(alarm)
-//    }
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-
+    fun getAlarms() :LiveData<List<Alarms>> {
+        return dao.getAll()
     }
 
-    override fun describeContents(): Int {
-        return 0
+    suspend fun addAlarm(alarm: Alarms) {
+        dao.insert(alarm)
     }
 
-    companion object CREATOR : Parcelable.Creator<AlarmViewModel> {
-        override fun createFromParcel(parcel: Parcel): AlarmViewModel {
-            return AlarmViewModel(parcel)
-        }
-
-        override fun newArray(size: Int): Array<AlarmViewModel?> {
-            return arrayOfNulls(size)
-        }
+    suspend fun deleteAlarm(alarm: Alarms) {
+        dao.delete(alarm)
     }
 }

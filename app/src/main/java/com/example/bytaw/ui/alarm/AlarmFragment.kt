@@ -1,16 +1,20 @@
 package com.example.bytaw.ui.alarm
 
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bytaw.R
 import com.example.bytaw.databinding.FragmentAlarmBinding
+import database.Alarms
+import kotlinx.coroutines.*
 
 class AlarmFragment : Fragment() {
 
@@ -31,12 +35,11 @@ class AlarmFragment : Fragment() {
 
         _binding = FragmentAlarmBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
 //        val textView: TextView = binding.textAlarm
 //        alarmViewModel.text.observe(viewLifecycleOwner, Observer {
 //            textView.text = it
 //        })
-        setupListAlarm()
+
         return root
     }
 
@@ -48,9 +51,38 @@ class AlarmFragment : Fragment() {
             true
         }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        CoroutineScope(Dispatchers.Main).launch {
+            observeDb()
+        }
+    }
+
+    suspend fun observeDb() = withContext(Dispatchers.Main) {
+        alarmViewModel.getAlarms().observe(viewLifecycleOwner, object: Observer<List<Alarms>> {
+            override fun onChanged(t: List<Alarms>?) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    with(_itemAlarmAdapter) {
+                        if (t != null) {
+                            this?.setItem(t)
+                            this?.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     fun showTimePickerDialog() {
-        val newFragment: DialogFragment = TimePickerFragment()
+        val newFragment: DialogFragment = TimePickerFragment(alarmViewModel, this)
         newFragment.show(childFragmentManager,"test")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        var currentAlarms: List<Alarms>? = null
+        setupListAlarm(currentAlarms)
     }
 
     override fun onDestroyView() {
@@ -58,10 +90,9 @@ class AlarmFragment : Fragment() {
         _binding = null
     }
 
-    private fun setupListAlarm() {
-        alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
-//        val sampleAlarms:Array<AlarmModel> = arrayOf(AlarmModel("test",12,23, arrayOf(1,2),true),AlarmModel("test2",12,9,null,true),AlarmModel("test3",2,2, arrayOf(0,1,2,3,4,5,6),true))
-        _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
+    fun setupListAlarm(alarms: List<Alarms>?) {
+        if (alarms.isNullOrEmpty()) return
+       _itemAlarmAdapter = ItemAlarmAdapter(alarms)
         _binding!!.rcvAlarm.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = _itemAlarmAdapter
