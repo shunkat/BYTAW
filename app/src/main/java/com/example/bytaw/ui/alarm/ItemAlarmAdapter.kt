@@ -16,29 +16,44 @@ class ItemAlarmAdapter(private val alarms: List<Alarms>?) :
         val repeatDays: TextView = view.findViewById(R.id.repeat_days_of_week)
     }
     val context = getContext()
+    private val currentAlarms = mutableListOf<Alarms>()
     // レイアウトの骨組み作り
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        if (alarms != null) {
+            currentAlarms.addAll(alarms)
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_alarm, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        if (alarms.isNullOrEmpty()) {
+        if (currentAlarms.isNullOrEmpty()) {
             viewHolder.wakeUpTime.text = "空です。"
             return
         }
-        viewHolder.wakeUpTime.text = alarms!![position].hour.toString() + ":" + alarms!![position].minute.toString()
+        viewHolder.wakeUpTime.text = currentAlarms!![position].hour.toString() + ":" + currentAlarms!![position].minute.toString()
         var repeatDays:String? = ""
-        if (alarms!![position].isRepeatable) {
-            if (alarms!![position].isSundayAlarm) repeatDays += "日 "
-            if (alarms!![position].isMondayAlarm) repeatDays += "月 "
-            if (alarms!![position].isTuesdayAlarm) repeatDays += "火 "
-            if (alarms!![position].isWednesdayAlarm) repeatDays += "水 "
-            if (alarms!![position].isThursdayAlarm) repeatDays += "木 "
-            if (alarms!![position].isFridayAlarm) repeatDays += "金 "
-            if (alarms!![position].isSaturdayAlarm) repeatDays += "土 "
+        if (currentAlarms!![position].isRepeatable) {
+            if (currentAlarms!![position].isSundayAlarm) repeatDays += "日 "
+            if (currentAlarms!![position].isMondayAlarm) repeatDays += "月 "
+            if (currentAlarms!![position].isTuesdayAlarm) repeatDays += "火 "
+            if (currentAlarms!![position].isWednesdayAlarm) repeatDays += "水 "
+            if (currentAlarms!![position].isThursdayAlarm) repeatDays += "木 "
+            if (currentAlarms!![position].isFridayAlarm) repeatDays += "金 "
+            if (currentAlarms!![position].isSaturdayAlarm) repeatDays += "土 "
         }
         viewHolder.repeatDays.text = repeatDays
     }
     override fun getItemCount() = alarms?.size ?: 0
+
+    fun setItem(newAlarm: List<Alarms>) {
+        currentAlarms.clear()
+        currentAlarms.addAll(newAlarm)
+    }
+
 }

@@ -51,15 +51,38 @@ class AlarmFragment : Fragment() {
             true
         }
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        CoroutineScope(Dispatchers.Main).launch {
+            observeDb()
+        }
+    }
+
+    suspend fun observeDb() = withContext(Dispatchers.Main) {
+        alarmViewModel.getAlarms().observe(viewLifecycleOwner, object: Observer<List<Alarms>> {
+            override fun onChanged(t: List<Alarms>?) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    with(_itemAlarmAdapter) {
+                        if (t != null) {
+                            this?.setItem(t)
+                            this?.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     fun showTimePickerDialog() {
         val newFragment: DialogFragment = TimePickerFragment(alarmViewModel, this)
-
         newFragment.show(childFragmentManager,"test")
     }
 
     override fun onResume() {
         super.onResume()
-        setupListAlarm()
+        var currentAlarms: List<Alarms>? = null
+        setupListAlarm(currentAlarms)
     }
 
     override fun onDestroyView() {
@@ -67,16 +90,12 @@ class AlarmFragment : Fragment() {
         _binding = null
     }
 
-    fun setupListAlarm() {
-//    alarmViewModel.setAlarm(AlarmModel("test",12,23, arrayOf(1,2),true))
-        CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.Default) {
-                _itemAlarmAdapter = ItemAlarmAdapter(alarmViewModel.getAlarms())
-                _binding!!.rcvAlarm.apply {
-                    layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                    adapter = _itemAlarmAdapter
-                }
-            }
+    fun setupListAlarm(alarms: List<Alarms>?) {
+        if (alarms.isNullOrEmpty()) return
+       _itemAlarmAdapter = ItemAlarmAdapter(alarms)
+        _binding!!.rcvAlarm.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = _itemAlarmAdapter
         }
     }
 }

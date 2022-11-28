@@ -28,11 +28,6 @@ class TimePickerFragment(private var alarmViewModel: AlarmViewModel, private var
         return TimePickerDialog(activity, this, hour, minute, DateFormat.is24HourFormat(activity))
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        (parentFragment as AlarmFragment).onResume()
-    }
-
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         // Do something with the time chosen by the user
         val newAlarm = Alarms(

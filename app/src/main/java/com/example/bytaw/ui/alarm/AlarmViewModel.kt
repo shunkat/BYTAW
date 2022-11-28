@@ -26,7 +26,7 @@ class AlarmViewModel @Inject constructor(application: Application): BaseViewMode
         MutableLiveData<List<Alarms>>()
     }
 
-    suspend fun getAlarms() :List<Alarms> {
+    fun getAlarms() :LiveData<List<Alarms>> {
         return dao.getAll()
     }
 
