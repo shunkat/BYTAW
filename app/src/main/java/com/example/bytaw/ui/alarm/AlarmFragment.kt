@@ -6,6 +6,7 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.AlarmClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,9 +24,22 @@ import com.example.bytaw.databinding.FragmentAlarmBinding
 import database.Alarms
 import kotlinx.coroutines.*
 import java.util.*
+import android.app.PendingIntent.getBroadcast
+import android.widget.Toast
+
+
+import android.content.Context.ALARM_SERVICE
+import androidx.core.content.ContextCompat
+
+import androidx.core.content.ContextCompat.getSystemService
+
+
+
+
+
+
 
 class AlarmFragment : Fragment() {
-
     private lateinit var alarmViewModel: AlarmViewModel
     private var _binding: FragmentAlarmBinding? = null
     private var _itemAlarmAdapter = ItemAlarmAdapter()
@@ -87,49 +101,45 @@ class AlarmFragment : Fragment() {
                     _itemAlarmAdapter?.setItem(t)
                 }
 
-                // サンプル
-                        val alarmMgr: AlarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                        val alarmIntent: PendingIntent = Intent(activity, AlarmBroadcastReceiver::class.java).let { intent ->
-                            PendingIntent.getBroadcast(context, 0, intent, 0)
-                        }
+
+                if (t == null) return
+                for (alarm in t) {
+                    if (alarm.isWork && alarm.hour != null) {
+                        // 超簡易的なアラームで良いならこれ
+//                        val mainActivity: MainActivity = activity as MainActivity
+//                        mainActivity.createAlarm("歯磨きしてね", alarm.hour, alarm.minute)
+
+                        val intent = Intent(
+                            context,
+                            AlarmBroadcastReceiver::class.java
+                        )
+                        val pending = getBroadcast(
+                            context, 0, intent,
+                            PendingIntent.FLAG_IMMUTABLE
+                        )
+
 
                         //アラームをセット
                         val calendar: Calendar = Calendar.getInstance().apply {
                             timeInMillis = System.currentTimeMillis()
-                            set(Calendar.HOUR_OF_DAY,21)
+                            set(Calendar.HOUR_OF_DAY, alarm.hour)
+                            set(Calendar.MINUTE,alarm.minute)
                         }
 
-                        alarmMgr.setInexactRepeating(
-                            AlarmManager.RTC_WAKEUP,
-                            calendar.timeInMillis,
-                            AlarmManager.INTERVAL_DAY,
-                            alarmIntent
-                        )
+                        // アラームをセットする
 
-                if (t == null) return
-//                for (alarm in t) {
-//                    if (alarm.isWork && alarm.hour != null) {
-//                        //実行するクラスを指定
-//                        val alarmMgr: AlarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//                        val alarmIntent: PendingIntent = Intent(activity, AlarmBroadcastReceiver::class.java).let { intent ->
-//                            PendingIntent.getBroadcast(context, 0, intent, 0)
-//                        }
-//
-//                        //アラームをセット
-//                        val calendar: Calendar = Calendar.getInstance().apply {
-//                            timeInMillis = System.currentTimeMillis()
-//                            set(Calendar.HOUR_OF_DAY, alarm.hour)
-//                        }
-//
-//                        alarmMgr.setInexactRepeating(
-//                            AlarmManager.RTC_WAKEUP,
-//                            calendar.timeInMillis,
-//                            AlarmManager.INTERVAL_DAY,
-//                            alarmIntent
-//                        )
-//                    }
-//
-//                }
+                        // アラームをセットする
+                        val am = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager?
+                        if (am != null) {
+                            am.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pending)
+                            Toast.makeText(
+                                context,
+                                "Set Alarm ", Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                }
             }
         })
     }
