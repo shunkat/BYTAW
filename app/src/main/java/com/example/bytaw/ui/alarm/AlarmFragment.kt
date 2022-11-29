@@ -35,14 +35,19 @@ import androidx.core.content.ContextCompat.getSystemService
 
 
 
-
-
-
-
 class AlarmFragment : Fragment() {
     private lateinit var alarmViewModel: AlarmViewModel
     private var _binding: FragmentAlarmBinding? = null
-    private var _itemAlarmAdapter = ItemAlarmAdapter()
+    private var _itemAlarmAdapter = ItemAlarmAdapter(object:ItemAlarmAdapter.SwitchLisener {
+        override fun onClick(isWork: Boolean, alarm: Alarms) {
+            alarm.isWork = !isWork
+            CoroutineScope(Dispatchers.IO).launch {
+                withContext(Dispatchers.IO) {
+                    alarmViewModel.updateAlarm(alarm)
+                }
+            }
+        }
+    })
 
     // This property is only valid between onCreateView and
     // onDestroyView.

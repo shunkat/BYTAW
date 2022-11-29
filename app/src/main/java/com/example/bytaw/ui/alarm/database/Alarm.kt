@@ -18,6 +18,6 @@ data class Alarms(
     @ColumnInfo val isThursdayAlarm: Boolean,
     @ColumnInfo val isFridayAlarm: Boolean,
     @ColumnInfo val isSaturdayAlarm: Boolean,
-    @ColumnInfo val isWork: Boolean,
+    @ColumnInfo var isWork: Boolean,
     @ColumnInfo var isAlarmSet: Boolean
 )
