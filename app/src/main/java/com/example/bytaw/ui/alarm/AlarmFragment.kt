@@ -2,6 +2,7 @@ package com.example.bytaw.ui.alarm
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,7 @@ class AlarmFragment : Fragment() {
 
     private lateinit var alarmViewModel: AlarmViewModel
     private var _binding: FragmentAlarmBinding? = null
-    private var _itemAlarmAdapter: ItemAlarmAdapter?= null
+    private var _itemAlarmAdapter = ItemAlarmAdapter()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -52,27 +53,6 @@ class AlarmFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        CoroutineScope(Dispatchers.Main).launch {
-            observeDb()
-        }
-    }
-
-    suspend fun observeDb() = withContext(Dispatchers.Main) {
-        alarmViewModel.getAlarms().observe(viewLifecycleOwner, object: Observer<List<Alarms>> {
-            override fun onChanged(t: List<Alarms>?) {
-                CoroutineScope(Dispatchers.Main).launch {
-                    with(_itemAlarmAdapter) {
-                        if (t != null) {
-                            this?.setItem(t)
-                            this?.notifyDataSetChanged()
-                        }
-                    }
-                }
-            }
-        })
-    }
 
     fun showTimePickerDialog() {
         val newFragment: DialogFragment = TimePickerFragment(alarmViewModel, this)
@@ -81,8 +61,7 @@ class AlarmFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        var currentAlarms: List<Alarms>? = null
-        setupListAlarm(currentAlarms)
+        setupListAlarm()
     }
 
     override fun onDestroyView() {
@@ -90,12 +69,18 @@ class AlarmFragment : Fragment() {
         _binding = null
     }
 
-    fun setupListAlarm(alarms: List<Alarms>?) {
-        if (alarms.isNullOrEmpty()) return
-       _itemAlarmAdapter = ItemAlarmAdapter(alarms)
+    fun setupListAlarm() {
         _binding!!.rcvAlarm.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = _itemAlarmAdapter
         }
+        alarmViewModel.getAlarms().observe(viewLifecycleOwner, object: Observer<List<Alarms>> {
+            override fun onChanged(t: List<Alarms>?) {
+                Log.d("hoge",t.toString())
+                if (_itemAlarmAdapter != null) {
+                    _itemAlarmAdapter?.setItem(t)
+                }
+            }
+        })
     }
 }
