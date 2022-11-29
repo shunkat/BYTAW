@@ -29,6 +29,8 @@ import android.widget.Toast
 
 
 import android.content.Context.ALARM_SERVICE
+import android.media.RingtoneManager
+import android.net.Uri
 import androidx.core.content.ContextCompat
 
 import androidx.core.content.ContextCompat.getSystemService
@@ -94,6 +96,13 @@ class AlarmFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+    fun invokeAlarm() {
+        val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        val ringtone = RingtoneManager.getRingtone(context, uri)
+
+        ringtone.play() // 再生
+    }
+
 
     fun setupListAlarm() {
         _binding!!.rcvAlarm.apply {
@@ -143,10 +152,6 @@ class AlarmFragment : Fragment() {
                                 "Set Alarm ", Toast.LENGTH_SHORT
                             ).show()
                         }
-                    }
-
-                }
-            }
-        })
+                    }}}})
     }
 }
