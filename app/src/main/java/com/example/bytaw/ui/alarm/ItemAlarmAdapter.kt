@@ -9,21 +9,18 @@ import com.example.bytaw.R
 import database.Alarms
 import java.security.AccessController.getContext
 
-class ItemAlarmAdapter(private val alarms: List<Alarms>?) :
+class ItemAlarmAdapter() :
     RecyclerView.Adapter<ItemAlarmAdapter.ViewHolder>() {
+    var currentAlarms: ArrayList<Alarms> = ArrayList()
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val wakeUpTime: TextView = view.findViewById(R.id.alarm_time)
         val repeatDays: TextView = view.findViewById(R.id.repeat_days_of_week)
     }
     val context = getContext()
-    private val currentAlarms = mutableListOf<Alarms>()
     // レイアウトの骨組み作り
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
-        if (alarms != null) {
-            currentAlarms.addAll(alarms)
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,11 +46,13 @@ class ItemAlarmAdapter(private val alarms: List<Alarms>?) :
         }
         viewHolder.repeatDays.text = repeatDays
     }
-    override fun getItemCount() = alarms?.size ?: 0
+    override fun getItemCount() = currentAlarms?.size ?: 0
 
-    fun setItem(newAlarm: List<Alarms>) {
+    fun setItem(newAlarm: List<Alarms>?) {
         currentAlarms.clear()
+        if (newAlarm.isNullOrEmpty()) return
         currentAlarms.addAll(newAlarm)
+        notifyDataSetChanged()
     }
 
 }
