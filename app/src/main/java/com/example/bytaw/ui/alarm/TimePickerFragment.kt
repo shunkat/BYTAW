@@ -42,7 +42,8 @@ class TimePickerFragment(private var alarmViewModel: AlarmViewModel, private var
             isThursdayAlarm = false,
             isFridayAlarm = false,
             isSaturdayAlarm = false,
-            isWork = true
+            isWork = true,
+            isAlarmSet = false
         )
 
         CoroutineScope(Dispatchers.IO).launch {

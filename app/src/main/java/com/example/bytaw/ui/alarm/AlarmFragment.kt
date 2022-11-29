@@ -104,10 +104,13 @@ class AlarmFragment : Fragment() {
 
                 if (t == null) return
                 for (alarm in t) {
-                    if (alarm.isWork && alarm.hour != null) {
-                        // 超簡易的なアラームで良いならこれ
-//                        val mainActivity: MainActivity = activity as MainActivity
-//                        mainActivity.createAlarm("歯磨きしてね", alarm.hour, alarm.minute)
+                    if (alarm.isWork && alarm.hour != null && !alarm.isAlarmSet) {
+                        alarm.isAlarmSet = true
+                        CoroutineScope(Dispatchers.IO).launch {
+                            withContext(Dispatchers.IO) {
+                                alarmViewModel.updateAlarm(alarm)
+                            }
+                        }
 
                         val intent = Intent(
                             context,
@@ -119,14 +122,12 @@ class AlarmFragment : Fragment() {
                         )
 
 
-                        //アラームをセット
+                        //　時刻指定
                         val calendar: Calendar = Calendar.getInstance().apply {
                             timeInMillis = System.currentTimeMillis()
                             set(Calendar.HOUR_OF_DAY, alarm.hour)
                             set(Calendar.MINUTE,alarm.minute)
                         }
-
-                        // アラームをセットする
 
                         // アラームをセットする
                         val am = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager?

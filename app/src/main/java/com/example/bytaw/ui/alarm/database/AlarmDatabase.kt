@@ -7,7 +7,7 @@ import androidx.room.Room.databaseBuilder
 import androidx.room.RoomDatabase
 import kotlin.coroutines.CoroutineContext
 
-@Database(entities = [Alarms::class], version = 1, exportSchema = false)
+@Database(entities = [Alarms::class], version = 2, exportSchema = false)
 abstract class AlarmDatabase: RoomDatabase() {
     abstract fun alarmDao(): AlarmDao
 
