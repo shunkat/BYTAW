@@ -11,15 +11,23 @@ import android.media.Ringtone
 import android.net.Uri
 import android.os.Handler
 import android.R
+import android.app.PendingIntent
 import android.os.Debug
 import android.util.Log
 
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.os.HandlerCompat.postDelayed
+import androidx.core.content.ContextCompat.getSystemService
+
+
+
+
+
+
 
 
 class AlarmBroadcastReceiver: BroadcastReceiver() {
-    val handler: Handler = Handler()
     override fun onReceive(context: Context, intent: Intent) {
         val mainIntent = Intent(context, MainActivity::class.java)
             .putExtra("onReceive", true)
@@ -27,30 +35,22 @@ class AlarmBroadcastReceiver: BroadcastReceiver() {
         context.startActivity(mainIntent)
 
 
-        // :todo 前回の歯磨き時間をkintoneから取得する処理とそれを、アラームを鳴らすかどうか判断するメソッドに渡す。
         val uri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val ringtone = RingtoneManager.getRingtone(context, uri)
 
-        Toast.makeText(context,"歯磨きするまでなり続けるよ", Toast.LENGTH_SHORT)    // トーストを作成する
-            .show() // トーストを表示する
-        ringtone.play()
-        fun play() {
-            handler.postDelayed({
-                Log.d("hoge","handler.isCalled")
-            }, 1000 * 5)
-        }
-      
-
-
-
-        fun stop() {
-            handler.postDelayed({
-                ringtone.stop()
-            },1000 * 5)
-        }
-        while (true) {
-            stop()
-            play()
+        if (false) {
+            Toast.makeText(context,"歯磨きしてえらい！", Toast.LENGTH_LONG)
+            val pendingIntent = PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                0
+            )
+            pendingIntent.cancel()
+        } else {
+            Toast.makeText(context,"歯磨きするまでなり続けるよ", Toast.LENGTH_SHORT)    // トーストを作成する
+                .show() // トーストを表示する
+            ringtone.play()
         }
     }
 }

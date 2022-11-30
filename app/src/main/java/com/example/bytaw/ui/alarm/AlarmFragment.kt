@@ -146,7 +146,7 @@ class AlarmFragment : Fragment() {
                         // アラームをセットする
                         val am = requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager?
                         if (am != null) {
-                            am.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pending)
+                            am.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis,1000 * 60 * 1 ,pending)
                             Toast.makeText(
                                 context,
                                 "Set Alarm ", Toast.LENGTH_SHORT
