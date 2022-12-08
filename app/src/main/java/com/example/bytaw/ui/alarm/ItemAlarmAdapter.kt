@@ -3,18 +3,21 @@ package com.example.bytaw.ui.alarm
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Switch
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bytaw.R
 import database.Alarms
 import java.security.AccessController.getContext
 
-class ItemAlarmAdapter() :
+class ItemAlarmAdapter(private val listener: SwitchLisener?) :
     RecyclerView.Adapter<ItemAlarmAdapter.ViewHolder>() {
     var currentAlarms: ArrayList<Alarms> = ArrayList()
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val wakeUpTime: TextView = view.findViewById(R.id.alarm_time)
         val repeatDays: TextView = view.findViewById(R.id.repeat_days_of_week)
+        val switchIsWork: Switch = view.findViewById(R.id.alarm_switch)
     }
     val context = getContext()
     // レイアウトの骨組み作り
@@ -45,8 +48,18 @@ class ItemAlarmAdapter() :
             if (currentAlarms!![position].isSaturdayAlarm) repeatDays += "土 "
         }
         viewHolder.repeatDays.text = repeatDays
+        var isWork = currentAlarms!![position].isWork
+        viewHolder.switchIsWork.isChecked = isWork
+        viewHolder.switchIsWork.setOnClickListener {
+            listener?.onClick(isWork, currentAlarms!![position])
+            notifyDataSetChanged()
+        }
     }
     override fun getItemCount() = currentAlarms?.size ?: 0
+
+    interface SwitchLisener {
+        fun onClick(isWork: Boolean, alarm: Alarms)
+    }
 
     fun setItem(newAlarm: List<Alarms>?) {
         currentAlarms.clear()

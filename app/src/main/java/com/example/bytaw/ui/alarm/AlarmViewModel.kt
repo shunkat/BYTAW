@@ -34,6 +34,10 @@ class AlarmViewModel @Inject constructor(application: Application): BaseViewMode
         dao.insert(alarm)
     }
 
+    suspend fun updateAlarm(alarm: Alarms) {
+        dao.update(alarm)
+    }
+
     suspend fun deleteAlarm(alarm: Alarms) {
         dao.delete(alarm)
     }
